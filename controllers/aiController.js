@@ -1,6 +1,9 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const History = require('../models/History');
 
+const MAX_TEXT_LENGTH = 12000;
+const ALLOWED_TASKS = new Set(['summarize', 'explain', 'analyze']);
+
 // Lazily create the Gemini client so the server can boot even when the
 // API key is missing — requests then fail with a clear error instead of
 // crashing the whole process at import time.
@@ -17,10 +20,17 @@ const getModel = () => {
 
 const analyzeText = async (req, res) => {
   try {
-    const { text, task } = req.body;
+    const text = typeof req.body.text === 'string' ? req.body.text.trim() : '';
+    const task = typeof req.body.task === 'string' ? req.body.task.trim().toLowerCase() : 'analyze';
 
-    if (!text || typeof text !== 'string' || !text.trim()) {
+    if (!text) {
       return res.status(400).json({ message: 'Text is required' });
+    }
+    if (text.length > MAX_TEXT_LENGTH) {
+      return res.status(413).json({ message: `Text must be ${MAX_TEXT_LENGTH} characters or fewer` });
+    }
+    if (!ALLOWED_TASKS.has(task)) {
+      return res.status(400).json({ message: 'Task must be summarize, explain, or analyze' });
     }
 
     let prompt = '';
@@ -40,13 +50,14 @@ const analyzeText = async (req, res) => {
     await History.create({
       user: req.userId,
       inputText: text,
-      task: task || 'analyze',
+      task,
       result: response,
     });
 
     res.status(200).json({ result: response });
   } catch (error) {
-    res.status(500).json({ message: 'AI processing failed', error: error.message });
+    console.error('AI processing error:', error);
+    res.status(500).json({ message: 'AI processing failed' });
   }
 };
 
