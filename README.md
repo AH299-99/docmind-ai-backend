@@ -46,7 +46,7 @@ npm start              # production
 | `JWT_SECRET`     | Secret for signing JWTs (long random string)       |
 | `GEMINI_API_KEY` | Google Gemini API key                              |
 | `GEMINI_MODEL`   | Gemini model name (default `gemini-2.0-flash`)     |
-| `FRONTEND_URL`   | Comma-separated allowed origins (empty = allow all)|
+| `FRONTEND_URL`  | Comma-separated allowed web origins (empty = deny web CORS) |
 
 ## 📡 API Endpoints
 
@@ -58,7 +58,7 @@ npm start              # production
 | POST   | `/api/auth/login`    | —    | Login → returns JWT `token`          |
 | POST   | `/api/ai/analyze`    | JWT  | Analyze text (`text`, `task`)        |
 
-`task` can be `summarize`, `explain`, or anything else (defaults to `analyze`). Send the JWT as `Authorization: Bearer <token>`.
+`task` must be `summarize`, `explain`, or `analyze`. Text input is limited to 12,000 characters. Send the JWT as `Authorization: Bearer <token>`.
 
 ## ☁️ Deployment
 

@@ -7,7 +7,9 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 // SIGNUP
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email and password are required' });
@@ -15,8 +17,11 @@ const signup = async (req, res) => {
     if (!isValidEmail(email)) {
       return res.status(400).json({ message: 'Invalid email address' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    if (name.length > 100 || email.length > 254) {
+      return res.status(400).json({ message: 'Name or email is too long' });
+    }
+    if (password.length < 12) {
+      return res.status(400).json({ message: 'Password must be at least 12 characters' });
     }
 
     // check if user already exists
@@ -37,14 +42,16 @@ const signup = async (req, res) => {
 
     res.status(201).json({ message: 'User created successfully', userId: newUser._id });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Signup error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // LOGIN
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
@@ -67,7 +74,8 @@ const login = async (req, res) => {
 
     res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
