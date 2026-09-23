@@ -11,8 +11,8 @@ const protect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.userId; // ye baad me use hoga (History save karte waqt)
-    next(); // sab theek hai, aage jaane do
+    req.userId = decoded.userId; // used later when saving History entries
+    next();
   } catch (error) {
     return res.status(401).json({ message: 'Not authorized, invalid token' });
   }

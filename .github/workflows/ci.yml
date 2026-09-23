@@ -18,3 +18,5 @@ jobs:
       - run: npm ci
       - name: Syntax check
         run: find . -path ./node_modules -prune -o -name '*.js' -print | xargs -I{} node --check {}
+      - name: Unit tests (input validation)
+        run: npm test

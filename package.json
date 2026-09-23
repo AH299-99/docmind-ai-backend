@@ -1,1 +1,39 @@
-{"author":"AH299-99","dependencies":{"@google/generative-ai":"^0.24.1","bcryptjs":"^3.0.3","cors":"^2.8.6","dotenv":"^17.4.2","express":"^5.2.1","jsonwebtoken":"^9.0.3","mongoose":"^9.9.4"},"description":"REST API backend for DocMind AI — JWT auth and Gemini-powered document text analysis with MongoDB.","devDependencies":{"nodemon":"^3.1.14"},"engines":{"node":">=18"},"keywords":["ai","gemini","express","mongodb","jwt","rest-api"],"license":"MIT","main":"index.js","name":"docmind-ai-backend","scripts":{"dev":"nodemon index.js","start":"node index.js","test":"node --test tests/"},"type":"commonjs","version":"1.0.0"}
+{
+  "author": "AH299-99",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.4"
+  },
+  "description": "REST API backend for DocMind AI \u2014 JWT auth and Gemini-powered document text analysis with MongoDB.",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "ai",
+    "gemini",
+    "express",
+    "mongodb",
+    "jwt",
+    "rest-api"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "docmind-ai-backend",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "node --test tests/validation.test.js"
+  },
+  "type": "commonjs",
+  "version": "1.0.0"
+}
