@@ -6,6 +6,11 @@ const {
   generateAssignment,
   exportDocument,
 } = require('../controllers/aiController');
+const {
+  initUpload,
+  receiveChunk,
+  completeUpload,
+} = require('../controllers/chunkedUploadController');
 const protect = require('../middleware/authMiddleware');
 const { upload, handleUploadError } = require('../middleware/upload');
 
@@ -24,6 +29,12 @@ router.post(
   },
   uploadDocument
 );
+
+// Chunked upload for large documents (bypasses small request-payload caps).
+// Flow: init -> chunk (repeat) -> complete. Same AI pipeline as /upload.
+router.post('/upload/init', protect, initUpload);
+router.post('/upload/chunk', protect, receiveChunk);
+router.post('/upload/complete', protect, completeUpload);
 
 router.post('/assignment', protect, generateAssignment);
 router.post('/export', protect, exportDocument);

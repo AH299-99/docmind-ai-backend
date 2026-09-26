@@ -217,4 +217,4 @@ const exportDocument = async (req, res) => {
   }
 };
 
-module.exports = { analyzeText, uploadDocument, generateAssignment, exportDocument };
+module.exports = { analyzeText, uploadDocument, generateAssignment, exportDocument, runTask, MAX_TEXT_LENGTH };

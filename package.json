@@ -41,7 +41,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "node --test tests/validation.test.js tests/aiFeatures.test.js"
+    "test": "node --test tests/validation.test.js tests/aiFeatures.test.js tests/chunkedUpload.test.js"
   },
   "type": "commonjs",
   "version": "1.0.0"
