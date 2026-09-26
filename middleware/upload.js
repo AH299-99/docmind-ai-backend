@@ -1,9 +1,10 @@
 // Multer setup for POST /api/ai/upload.
-// Memory storage (files never touch disk), 10MB cap, and an extension
-// whitelist for .pdf / .docx / .txt. Validation errors are mapped to
-// clear 400 responses by handleUploadError, used in routes/aiRoutes.js.
+// Memory storage (files never touch disk), an env-configurable size cap
+// (MAX_UPLOAD_MB, default 10MB), and an extension whitelist for
+// .pdf / .docx / .txt. Validation errors are mapped to clear 400 responses
+// by handleUploadError, used in routes/aiRoutes.js.
 const multer = require('multer');
-const { ALLOWED_UPLOAD_EXTS, MAX_UPLOAD_BYTES, getFileExtension } = require('../utils/documents');
+const { ALLOWED_UPLOAD_EXTS, MAX_UPLOAD_MB, MAX_UPLOAD_BYTES, getFileExtension } = require('../utils/documents');
 
 const INVALID_TYPE = 'INVALID_FILE_TYPE';
 
@@ -31,7 +32,7 @@ const handleUploadError = (err, res) => {
   if (err.code === 'LIMIT_FILE_SIZE') {
     res
       .status(400)
-      .json({ message: 'File is too large. Maximum file size is 10MB.' });
+      .json({ message: `File is too large. Maximum file size is ${MAX_UPLOAD_MB}MB.` });
     return true;
   }
   if (err.code === INVALID_TYPE) {
@@ -45,4 +46,4 @@ const handleUploadError = (err, res) => {
   return false;
 };
 
-module.exports = { upload, fileFilter, handleUploadError, MAX_UPLOAD_BYTES };
+module.exports = { upload, fileFilter, handleUploadError, MAX_UPLOAD_MB, MAX_UPLOAD_BYTES };

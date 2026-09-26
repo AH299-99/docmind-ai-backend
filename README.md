@@ -157,12 +157,14 @@ npm test   # runs automatically on every push via GitHub Actions
 
 ## ☁️ Deployment
 
-Recommended: **Render** (free tier) + **MongoDB Atlas** (free M0).
+Recommended: **Vercel** (Hobby, no card needed) + **MongoDB Atlas** (free M0).
 
 1. Push this repo to GitHub (CI runs automatically).
-2. Create a **Web Service** on Render from this repo — build command `npm install`, start command `npm start`.
-3. Add the environment variables from `.env.example` in Render's dashboard.
-4. Render auto-deploys on every push to `main`.
+2. Import the repo in Vercel — it picks up `vercel.json` automatically (all routes served by the `api/index.js` serverless function).
+3. Add the environment variables from `.env.example` in Vercel's dashboard. **Important:** set `MAX_UPLOAD_MB=4` — Vercel Hobby caps request payloads at ~4.5MB, so the default 10MB upload limit would fail there.
+4. Vercel auto-deploys on every push to `main`.
+
+Alternative: any long-running Node host (Render, VPS, ...) with `npm start` (entry: `index.js`).
 
 ## 📄 License
 

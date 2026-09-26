@@ -8,7 +8,10 @@ const { Document, Packer, Paragraph, HeadingLevel, TextRun } = require('docx');
 const { withHumanTone } = require('./humanTone');
 
 const ALLOWED_UPLOAD_EXTS = ['.pdf', '.docx', '.txt'];
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB
+// Env-configurable so serverless hosts with small payload caps (e.g. Vercel's
+// 4.5MB Hobby limit) can lower it via MAX_UPLOAD_MB without a code change.
+const MAX_UPLOAD_MB = parseInt(process.env.MAX_UPLOAD_MB || '10', 10) || 10;
+const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024;
 
 const ALLOWED_LEVELS = ['school', 'college', 'university'];
 const ALLOWED_LENGTHS = ['short', 'medium', 'long'];
@@ -189,6 +192,7 @@ const normalizeExportFormat = (format) => {
 
 module.exports = {
   ALLOWED_UPLOAD_EXTS,
+  MAX_UPLOAD_MB,
   MAX_UPLOAD_BYTES,
   ALLOWED_LEVELS,
   ALLOWED_LENGTHS,
