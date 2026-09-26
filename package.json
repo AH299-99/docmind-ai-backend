@@ -4,14 +4,19 @@
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "docx": "^9.7.2",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.4"
+    "mammoth": "^1.12.3",
+    "mongoose": "^9.9.4",
+    "multer": "^2.4.0",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.20.2"
   },
-  "description": "REST API backend for DocMind AI \u2014 JWT auth and Gemini-powered document text analysis with MongoDB.",
+  "description": "REST API backend for DocMind AI — JWT auth and Gemini-powered document text analysis with MongoDB.",
   "repository": {
     "type": "git",
     "url": "https://github.com/AH299-99/docmind-ai-backend.git"
@@ -36,7 +41,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "node --test tests/validation.test.js"
+    "test": "node --test tests/validation.test.js tests/aiFeatures.test.js"
   },
   "type": "commonjs",
   "version": "1.0.0"
