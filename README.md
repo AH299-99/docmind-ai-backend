@@ -1,15 +1,19 @@
 # DocMind AI — Backend
 
-REST API backend for **DocMind AI**, an AI-powered document text analysis app. Provides JWT authentication and text analysis (summarize / explain / analyze) powered by Google Gemini, with per-user history stored in MongoDB.
+[![CI](https://github.com/AH299-99/docmind-ai-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/AH299-99/docmind-ai-backend/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+REST API backend for **DocMind AI**. Sign up, log in, and get AI summaries, simple explanations, and key insights for any text — powered by Google Gemini, with each user's analysis history saved in MongoDB.
 
 ## ✨ Features
 
 - 🔐 User signup & login with bcrypt-hashed passwords and JWT tokens
-- 🤖 AI text analysis via Google Gemini (`summarize`, `explain`, `analyze`)
+- 🤖 AI text analysis via Google Gemini — `summarize`, `explain`, or `analyze`
 - 🕘 Per-user analysis history persisted in MongoDB
 - 🛡️ Protected routes with JWT middleware
+- 🚦 Rate limiting on auth and AI endpoints, plus security headers
+- ✅ Strict request validation on auth endpoints
 - ❤️ Health-check endpoint for monitoring / deployment probes
-- ✅ Request validation on auth endpoints
 
 ## 🛠️ Tech Stack
 
@@ -18,6 +22,7 @@ REST API backend for **DocMind AI**, an AI-powered document text analysis app. P
 - **Database:** MongoDB (Mongoose)
 - **AI:** Google Gemini (`@google/generative-ai`)
 - **Auth:** jsonwebtoken + bcryptjs
+- **Safety:** helmet, express-rate-limit, dotenv
 
 ## 🚀 Getting Started
 
@@ -39,26 +44,66 @@ npm start              # production
 
 ### Environment Variables
 
-| Variable         | Description                                        |
-| ---------------- | -------------------------------------------------- |
-| `PORT`           | Port to listen on (default `5000`)                 |
-| `MONGO_URI`      | MongoDB connection string                          |
-| `JWT_SECRET`     | Secret for signing JWTs (long random string)       |
-| `GEMINI_API_KEY` | Google Gemini API key                              |
-| `GEMINI_MODEL`   | Gemini model name (default `gemini-2.0-flash`)     |
-| `FRONTEND_URL`   | Comma-separated allowed origins (empty = allow all)|
+| Variable             | Required | Description                                                                     |
+| -------------------- | -------- | ------------------------------------------------------------------------------- |
+| `PORT`               | No       | Port to listen on (default `5000`)                                              |
+| `MONGO_URI`          | Yes      | MongoDB connection string (the app refuses to boot without it)                  |
+| `JWT_SECRET`         | Yes      | Secret for signing JWTs — use a long random string (boot fails without it)      |
+| `GEMINI_API_KEY`     | Yes*     | Google Gemini API key (*only AI features need it; the server boots without it)  |
+| `GEMINI_MODEL`       | No       | Gemini model name (default `gemini-2.0-flash`)                                  |
+| `FRONTEND_URL`       | No       | Comma-separated allowed frontend origins. When unset, browser cross-origin requests are **denied** (fail-safe); native mobile apps are unaffected |
+| `AI_MAX_TEXT_LENGTH` | No       | Max AI input length in characters (default `20000`)                             |
 
 ## 📡 API Endpoints
 
-| Method | Endpoint             | Auth | Description                          |
-| ------ | -------------------- | ---- | ------------------------------------ |
-| GET    | `/`                  | —    | Service banner                       |
-| GET    | `/api/health`        | —    | Health check                         |
-| POST   | `/api/auth/signup`   | —    | Register (`name`, `email`, `password`)|
-| POST   | `/api/auth/login`    | —    | Login → returns JWT `token`          |
-| POST   | `/api/ai/analyze`    | JWT  | Analyze text (`text`, `task`)        |
+| Method | Endpoint             | Auth | Description                           |
+| ------ | -------------------- | ---- | ------------------------------------- |
+| GET    | `/`                  | —    | Service banner                        |
+| GET    | `/api/health`        | —    | Health check (uptime, timestamp)      |
+| POST   | `/api/auth/signup`   | —    | Register (`name`, `email`, `password`) |
+| POST   | `/api/auth/login`    | —    | Login → returns JWT `token`           |
+| POST   | `/api/ai/analyze`    | JWT  | Analyze text (`text`, `task`)         |
 
-`task` can be `summarize`, `explain`, or anything else (defaults to `analyze`). Send the JWT as `Authorization: Bearer <token>`.
+`task` must be `summarize`, `explain`, or `analyze` — it defaults to `analyze` when omitted, and anything else returns `400`. Send the JWT as `Authorization: Bearer <token>`.
+
+### Quick try
+
+```bash
+# register
+curl -X POST http://localhost:5000/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Sara","email":"sara@example.com","password":"secret123"}'
+
+# log in (copy the token from the response)
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"sara@example.com","password":"secret123"}'
+
+# analyze text
+curl -X POST http://localhost:5000/api/ai/analyze \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Paste a long paragraph here...","task":"summarize"}'
+```
+
+## 📁 Project Structure
+
+```
+index.js               # app entry: middleware, routes, 404 + error handlers
+config/db.js           # MongoDB connection
+controllers/           # signup/login + AI analysis logic
+routes/                # /api/auth and /api/ai route definitions
+middleware/            # JWT auth + rate limiters
+models/                # User and History (Mongoose schemas)
+utils/validation.js    # shared input validation (unit tested)
+tests/                 # node:test unit tests (run by CI)
+```
+
+## 🧪 Tests
+
+```bash
+npm test   # runs automatically on every push via GitHub Actions
+```
 
 ## ☁️ Deployment
 
@@ -71,4 +116,4 @@ Recommended: **Render** (free tier) + **MongoDB Atlas** (free M0).
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE).
+MIT © 2026 Azmat Hayat — see [LICENSE](LICENSE).

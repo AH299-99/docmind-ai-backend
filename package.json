@@ -1,5 +1,5 @@
 {
-  "author": "AH299-99",
+  "author": "Azmat Hayat",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.3",
@@ -12,6 +12,10 @@
     "mongoose": "^9.9.4"
   },
   "description": "REST API backend for DocMind AI \u2014 JWT auth and Gemini-powered document text analysis with MongoDB.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AH299-99/docmind-ai-backend.git"
+  },
   "devDependencies": {
     "nodemon": "^3.1.14"
   },
